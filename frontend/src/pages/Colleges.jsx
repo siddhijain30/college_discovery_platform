@@ -97,12 +97,14 @@ export default function Colleges() {
       <div className="flex flex-col md:flex-row gap-8">
         {/* Sidebar */}
         <div className="w-full md:w-1/4 flex-shrink-0">
-          <FilterSidebar 
-            filters={filters} 
-            setFilters={setFilters} 
-            applyFilters={applyFilters} 
-            resetFilters={resetFilters} 
-          />
+          <div className="sticky top-20 self-start">
+            <FilterSidebar 
+              filters={filters} 
+              setFilters={setFilters} 
+              applyFilters={applyFilters} 
+              resetFilters={resetFilters} 
+            />
+          </div>
         </div>
 
         {/* Main Content */}

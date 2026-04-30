@@ -2,6 +2,8 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import CompareBar from './components/CompareBar';
+import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home';
 import Colleges from './pages/Colleges';
 import CollegeDetail from './pages/CollegeDetail';
@@ -12,6 +14,7 @@ import { CompareProvider } from './context/CompareContext';
 function App() {
   return (
     <CompareProvider>
+      <ScrollToTop />
       <div className="min-h-screen bg-white font-sans text-text-primary flex flex-col">
         <Navbar />
         <main className="flex-grow relative">
@@ -24,6 +27,7 @@ function App() {
           </Routes>
         </main>
         <CompareBar />
+        <Footer />
       </div>
     </CompareProvider>
   );
