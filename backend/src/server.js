@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3001;
 app.use(express.json());
 
 app.use(cors({
-  origin: 'https://https://college-discovery-platform-orpin.vercel.app', // Your specific Vercel URL
+  origin: 'https://college-discovery-platform-orpin.vercel.app', //specific Vercel URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true // Only if you are using cookies/sessions
 }));
