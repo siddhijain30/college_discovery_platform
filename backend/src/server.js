@@ -10,8 +10,13 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors());
 app.use(express.json());
+
+app.use(cors({
+  origin: 'https://https://college-discovery-platform-orpin.vercel.app', // Your specific Vercel URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true // Only if you are using cookies/sessions
+}));
 
 // Routes
 app.use('/api/colleges', collegeRoutes);
