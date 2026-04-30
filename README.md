@@ -33,7 +33,7 @@ A full-stack, production-ready web application for discovering and comparing col
    ```
 3. Copy the environment variables:
    ```bash
-   cp .env.example .env
+   cp .env
    ```
 4. Edit the `.env` file and replace the `DATABASE_URL` with your actual PostgreSQL connection string.
 5. Start the backend server:
@@ -61,7 +61,6 @@ A full-stack, production-ready web application for discovering and comparing col
 ---
 
 ## Design Highlights
-- Professional, human-written code following best practices.
 - Fully responsive design using Tailwind CSS utility classes.
 - Meaningful variable names, organized React structure, and extracted components.
 - Smooth loading states with skeletons for enhanced user experience.
