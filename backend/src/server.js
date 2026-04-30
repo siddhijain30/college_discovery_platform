@@ -12,15 +12,24 @@ const PORT = process.env.PORT || 3001;
 // 1. Improved Allowed Origins
 const allowedOrigins = [
   'http://localhost:5173',
+<<<<<<< HEAD
   'https://college-discovery-platform-orpin.vercel.app/api'
 
+=======
+  'http://localhost:3000',
+  'https://college-discovery-platform-orpin.vercel.app' // Add your specific Vercel URL
+>>>>>>> 98ce94f86d1276ce454f813cedbef188babcc411
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 98ce94f86d1276ce454f813cedbef188babcc411
     const isAllowed = allowedOrigins.some((allowed) => {
       if (allowed instanceof RegExp) return allowed.test(origin);
       return allowed === origin;
