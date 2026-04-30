@@ -9,14 +9,33 @@ const predictorRoutes = require('./routes/predictor');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
-app.use(express.json());
+// Allowed origins: local dev + any Vercel deployment
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  /\.vercel\.app$/,  // matches any *.vercel.app subdomain
+];
 
+// CORS Middleware — must be before routes and express.json
 app.use(cors({
-  origin: 'https://college-discovery-platform-orpin.vercel.app', //specific Vercel URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true // Only if you are using cookies/sessions
+  origin: function (origin, callback) {
+    // Allow requests with no origin (Postman, curl, mobile apps)
+    if (!origin) return callback(null, true);
+    const isAllowed = allowedOrigins.some((allowed) =>
+      allowed instanceof RegExp ? allowed.test(origin) : allowed === origin
+    );
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS policy: origin ${origin} not allowed`));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
+app.use(express.json());
 
 // Routes
 app.use('/api/colleges', collegeRoutes);
