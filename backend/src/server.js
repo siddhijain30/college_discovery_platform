@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3001;
 // 1. Improved Allowed Origins
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://college-discovery-platform-orpin.vercel.app/api'
+  'https://college-discovery-platform-orpin.vercel.app'
 ];
 
 app.use(cors({
