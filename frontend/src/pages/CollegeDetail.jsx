@@ -10,6 +10,7 @@ export default function CollegeDetail() {
   const { id } = useParams();
   const [college, setCollege] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null); // null | 'not_found' | 'server_error'
   const [activeTab, setActiveTab] = useState('Overview');
   
   const { addToCompare, compareList } = useContext(CompareContext);
@@ -17,11 +18,17 @@ export default function CollegeDetail() {
 
   useEffect(() => {
     const fetchCollege = async () => {
+      setError(null);
       try {
         const response = await api.get(`/colleges/${id}`);
         setCollege(response.data);
-      } catch (error) {
-        console.error("Error fetching college details:", error);
+      } catch (err) {
+        console.error('Error fetching college details:', err);
+        if (err.response?.status === 404) {
+          setError('not_found');
+        } else {
+          setError('server_error');
+        }
       } finally {
         setLoading(false);
       }
@@ -33,8 +40,26 @@ export default function CollegeDetail() {
     return <div className="max-w-7xl mx-auto px-4 py-20 text-center text-text-secondary">Loading details...</div>;
   }
 
-  if (!college) {
-    return <div className="max-w-7xl mx-auto px-4 py-20 text-center text-text-primary text-xl font-bold">College not found</div>;
+  if (error === 'not_found') {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
+        <div className="text-6xl mb-4">🏫</div>
+        <h2 className="text-2xl font-bold text-text-primary mb-2">College not found</h2>
+        <p className="text-text-secondary mb-6">The college you're looking for doesn't exist or may have been removed.</p>
+        <a href="/colleges" className="bg-primary text-white px-6 py-2 rounded-lg font-bold hover:bg-primary-dark transition-colors">Browse Colleges</a>
+      </div>
+    );
+  }
+
+  if (error === 'server_error' || !college) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
+        <div className="text-6xl mb-4">⚠️</div>
+        <h2 className="text-2xl font-bold text-text-primary mb-2">Something went wrong</h2>
+        <p className="text-text-secondary mb-6">Failed to load college details. Please try again.</p>
+        <button onClick={() => window.location.reload()} className="bg-primary text-white px-6 py-2 rounded-lg font-bold hover:bg-primary-dark transition-colors">Retry</button>
+      </div>
+    );
   }
 
   const tabs = ['Overview', 'Courses', 'Placements', 'Reviews'];

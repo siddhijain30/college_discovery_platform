@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPinIcon, BuildingLibraryIcon } from '@heroicons/react/24/outline';
 import StarRating from './StarRating';
@@ -7,13 +7,19 @@ import { CompareContext } from '../context/CompareContext';
 export default function CollegeCard({ college }) {
   const { addToCompare, compareList } = useContext(CompareContext);
   const isCompared = compareList.some(c => c.id === college.id);
+  const [imgError, setImgError] = useState(false);
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-border-custom overflow-hidden hover:shadow-md transition-shadow group">
       {/* Image Section */}
       <div className="h-48 w-full bg-gradient-to-br from-primary-light to-white relative flex items-center justify-center">
-        {college.image_url ? (
-          <img src={college.image_url} alt={college.name} className="w-full h-full object-cover" />
+        {college.image_url && !imgError ? (
+          <img
+            src={college.image_url}
+            alt={college.name}
+            className="w-full h-full object-cover"
+            onError={() => setImgError(true)}
+          />
         ) : (
           <BuildingLibraryIcon className="h-16 w-16 text-primary opacity-50" />
         )}

@@ -66,17 +66,29 @@ exports.getCollegeById = async (req, res) => {
       .eq('id', id)
       .single();
 
-    if (collegeError) throw collegeError;
+    // PGRST116 = no rows found in Supabase
+    if (collegeError) {
+      if (collegeError.code === 'PGRST116') {
+        return res.status(404).json({ error: 'College not found' });
+      }
+      throw collegeError;
+    }
+
+    if (!college) {
+      return res.status(404).json({ error: 'College not found' });
+    }
 
     const { data: reviews, error: reviewsError } = await supabase
       .from('college_reviews')
       .select('*')
       .eq('college_id', id);
 
-    if (reviewsError) throw reviewsError;
+    // Don't fail the whole request if reviews can't be fetched
+    const safeReviews = reviewsError ? [] : (reviews || []);
 
-    res.json({ ...college, reviews });
+    res.json({ ...college, reviews: safeReviews });
   } catch (error) {
+    console.error('getCollegeById error:', error);
     res.status(500).json({ error: error.message });
   }
 };

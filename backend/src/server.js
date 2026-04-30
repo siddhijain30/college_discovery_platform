@@ -9,25 +9,29 @@ const predictorRoutes = require('./routes/predictor');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Allowed origins: local dev + any Vercel deployment
+// 1. Improved Allowed Origins
 const allowedOrigins = [
   'http://localhost:5173',
-  'http://localhost:3000',
-  /\.vercel\.app$/,  // matches any *.vercel.app subdomain
+  'https://college-discovery-platform-orpin.vercel.app/api'
+
 ];
 
-// CORS Middleware — must be before routes and express.json
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (Postman, curl, mobile apps)
+    // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
-    const isAllowed = allowedOrigins.some((allowed) =>
-      allowed instanceof RegExp ? allowed.test(origin) : allowed === origin
-    );
+
+    const isAllowed = allowedOrigins.some((allowed) => {
+      if (allowed instanceof RegExp) return allowed.test(origin);
+      return allowed === origin;
+    });
+
     if (isAllowed) {
       callback(null, true);
     } else {
-      callback(new Error(`CORS policy: origin ${origin} not allowed`));
+      // Log the origin for easier debugging
+      console.log("Blocked by CORS:", origin);
+      callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
@@ -37,14 +41,19 @@ app.use(cors({
 
 app.use(express.json());
 
-// Routes
+// 2. THE ROUTE PREFIX
+// Your code defines routes under /api/...
 app.use('/api/colleges', collegeRoutes);
 app.use('/api/compare', compareRoutes);
 app.use('/api/predictor', predictorRoutes);
 
-// Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// IMPORTANT: Catch-all for undefined routes (helps debug 404s)
+app.use((req, res) => {
+  res.status(404).json({ error: `Route ${req.originalUrl} not found` });
 });
 
 app.listen(PORT, () => {
